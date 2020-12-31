@@ -2,8 +2,7 @@ package com.rab.bubblelevel;
 
 public class HandleData {
     // Declaration of Global variable starts here.
-    private static Double[] oneDValues;
-    private static Double[][] twoDValues;
+    private static OneD_Values[] oneDValues;
     private static int index = 0;
     // Declaration of Global variable ends here.
 
@@ -11,13 +10,12 @@ public class HandleData {
     public HandleData()
     {
         index = 0;
-        oneDValues = new Double[500];
-        twoDValues = new Double[500][500];
+        oneDValues = new OneD_Values[500];
     }
     // Declaration of constructor ends here.
 
     // Below method will be used to insert new value in 1D array.
-    protected void record1DValues(double value)
+    protected void record1DValues(OneD_Values value)
     {
         oneDValues[index] = value; // Inserting value at index so far.
         incrementIndex(); // Calling method to increment Index.
@@ -36,7 +34,7 @@ public class HandleData {
     // incrementIndex method ends here.
 
     // Below method will be used to fetch last record inserted in 1D array.
-    protected Double get1DLastData()
+    protected OneD_Values get1DLastData()
     {
         if(oneDValues.length>0) // In case there are records in array, do as below. This is to handle initial state of application records.
         {
@@ -47,7 +45,7 @@ public class HandleData {
         }
         else // In case there are no records in Array, return 0.
         {
-            return 0.0; // Returning 0.0
+            return null; // Returning null if there are no data.
         }
     }
     // get1DLastData method ends here.

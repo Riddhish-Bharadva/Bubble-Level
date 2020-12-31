@@ -9,7 +9,16 @@
 
     <TextView
         android:id="@+id/TV1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="This is Text View"
+        android:layout_margin="10dp"/>
+
+    <com.rab.bubblelevel.OneD_CV
+        android:id="@+id/OneD_CV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/TV1"/>
 
 </RelativeLayout>
