@@ -53,7 +53,7 @@ public class OneD_CV extends View {
         if(deviceTotalHeight<1000)
             unitShape = new Rect(0, 0, blockWidth*8, blockWidth*3/2); // Creating box using rectangle.
         else
-            unitShape = new Rect(0, 0, blockWidth*8, blockWidth*3); // Creating box using rectangle.
+            unitShape = new Rect(0, 0, blockWidth*8, blockWidth*2); // Creating box using rectangle.
         hd = new HandleData();
     }
 
@@ -71,11 +71,11 @@ public class OneD_CV extends View {
         canvas.translate(Float.parseFloat((blockWidth*i)+""),0);
         if(blockWidth>125)
         {
-            canvas.drawCircle(0,blockWidth*3/4,Float.parseFloat((blockWidth/2)+""),bubbleCircle);
+            canvas.drawCircle(0,Float.parseFloat(blockWidth*3/4+""),Float.parseFloat((blockWidth/2)+""),bubbleCircle);
         }
         else
         {
-            canvas.drawCircle(0,blockWidth*3/2,Float.parseFloat(blockWidth+""),bubbleCircle);
+            canvas.drawCircle(0,Float.parseFloat(blockWidth+""),Float.parseFloat(blockWidth/2+""),bubbleCircle);
         }
     }
 }
