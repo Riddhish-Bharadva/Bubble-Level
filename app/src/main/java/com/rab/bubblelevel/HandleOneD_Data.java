@@ -1,13 +1,13 @@
 package com.rab.bubblelevel;
 
-public class HandleData {
+public class HandleOneD_Data {
     // Declaration of Global variable starts here.
     private static OneD_Values[] oneDValues;
     private static int index = 0;
     // Declaration of Global variable ends here.
 
     // Declaration of constructor starts.
-    public HandleData()
+    public HandleOneD_Data()
     {
         index = 0;
         oneDValues = new OneD_Values[500];

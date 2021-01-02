@@ -3,10 +3,10 @@ package com.rab.bubblelevel;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.*;
 import android.hardware.*;
-
-import java.text.DecimalFormat;
+import java.text.*;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -21,35 +21,39 @@ public class MainActivity extends AppCompatActivity {
         TextView minInDegreesTV = findViewById(R.id.minInDegrees);
         TextView maxInDegreesTV = findViewById(R.id.maxInDegrees);
         final OneD_CV oDCV = findViewById(R.id.OneD_CV);
+        final TwoD_CV tDCV = findViewById(R.id.TwoD_CV);
         SensorManager sm = (SensorManager) getSystemService(SENSOR_SERVICE);
 
         if(sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)!=null)
         {
             sm.registerListener(new SensorEventListener() {
-                final HandleData[] hd = new HandleData[1];
+                final HandleOneD_Data[] hodd = new HandleOneD_Data[1];
                 final int[] orientation = {-1};
+                double minDegree = Double.MAX_VALUE, maxDegree = Double.MIN_VALUE;
                 @Override
                 public void onAccuracyChanged(Sensor sensor, int accuracy) { }
                 @Override
                 public void onSensorChanged(SensorEvent event) {
-                    if(Math.abs(event.values[2]) < 5.0)
+                    OneD_Values oDV = new OneD_Values();
+                    float xValue, yValue, zValue;
+                    double degreeValue, azimuth = 0;
+                    String temp;
+                    oDV.setXValue(event.values[0]);
+                    oDV.setYValue(event.values[1]);
+                    oDV.setZValue(event.values[2]);
+                    xValue = oDV.getXValue();
+                    yValue = oDV.getYValue();
+                    zValue = oDV.getZValue();
+                    if(Math.abs(event.values[2]) < 8.0)
                     {
-                        OneD_Values oDV = new OneD_Values();
-                        float xValue, yValue, zValue;
-                        double degreeValue, minDegree = Double.MAX_VALUE, maxDegree = Double.MIN_VALUE, azimuth = 0;
-                        String temp;
+                        oDCV.setVisibility(View.VISIBLE);
+                        tDCV.setVisibility(View.INVISIBLE);
+                        degreeValue = Math.toDegrees(Math.atan2(Double.parseDouble(yValue+""),Double.parseDouble(xValue+"")));
                         if(orientation[0] != getResources().getConfiguration().orientation)
                         {
                             orientation[0] = getResources().getConfiguration().orientation;
-                            hd[0] = new HandleData();
+                            hodd[0] = new HandleOneD_Data();
                         }
-                        oDV.setXValue(event.values[0]);
-                        oDV.setYValue(event.values[1]);
-                        oDV.setZValue(event.values[2]);
-                        xValue = oDV.getXValue();
-                        yValue = oDV.getYValue();
-                        zValue = oDV.getZValue();
-                        degreeValue = Math.toDegrees(Math.atan2(Double.parseDouble(yValue+""),Double.parseDouble(xValue+"")));
                         if(orientation[0] == Configuration.ORIENTATION_LANDSCAPE)
                         {
                             if(degreeValue > 0 && degreeValue < 90)
@@ -68,33 +72,47 @@ public class MainActivity extends AppCompatActivity {
                             else
                                 azimuth = 90 + degreeValue;
                         }
+                        DecimalFormat df = new DecimalFormat("#.##");
+                        azimuth = Double.parseDouble(df.format(azimuth));
                         if(Math.abs(azimuth) <= 10.0)
                         {
                             oDV.setInclinationInDegrees(azimuth);
-                            hd[0].record1DValues(oDV);
+                            hodd[0].record1DValues(oDV);
                             oDCV.postInvalidate();
                             temp = "Inclination in Degrees: "+Math.abs(oDV.getInclinationInDegrees());
                             valueInDegreesTV.setText(temp);
-//                            if(Math.abs(azimuth)<Math.abs(minDegree))
-//                            {
-//                                minDegree = azimuth;
-//                                temp = "Minimum Inclination in Degree: "+minDegree;
-//                                minInDegreesTV.setText(temp);
-//                            }
-//                            else if(Math.abs(azimuth)>Math.abs(maxDegree))
-//                            {
-//                                maxDegree = azimuth;
-//                                temp = "Maximum Inclination in Degree: "+maxDegree;
-//                                maxInDegreesTV.setText(temp);
-//                            }
                         }
-                        if(hd[0].get1DLastData() != null)
+                        else if(azimuth > 10.0)
                         {
-                            temp = "x value: "+xValue;
+                            oDV.setInclinationInDegrees(10.0);
+                            hodd[0].record1DValues(oDV);
+                            oDCV.postInvalidate();
+                        }
+                        else
+                        {
+                            oDV.setInclinationInDegrees(-10.0);
+                            hodd[0].record1DValues(oDV);
+                            oDCV.postInvalidate();
+                        }
+                        if(azimuth<minDegree)
+                        {
+                            minDegree = azimuth;
+                            temp = "Minimum Inclination in Degree: "+minDegree;
+                            minInDegreesTV.setText(temp);
+                        }
+                        if(azimuth>maxDegree)
+                        {
+                            maxDegree = azimuth;
+                            temp = "Maximum Inclination in Degree: "+maxDegree;
+                            maxInDegreesTV.setText(temp);
+                        }
+                        if(hodd[0].get1DLastData() != null)
+                        {
+                            temp = "X-axis value: "+xValue;
                             xTV.setText(temp);
-                            temp = "y value: "+yValue;
+                            temp = "Y-axis value: "+yValue;
                             yTV.setText(temp);
-                            temp = "z value: "+zValue;
+                            temp = "Z-axis value: "+zValue;
                             zTV.setText(temp);
                         }
                         else
@@ -105,6 +123,11 @@ public class MainActivity extends AppCompatActivity {
                             zTV.setText("");
                             valueInDegreesTV.setText(temp);
                         }
+                    }
+                    else
+                    {
+                        oDCV.setVisibility(View.INVISIBLE);
+                        tDCV.setVisibility(View.VISIBLE);
                     }
                 }
             }, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_NORMAL);

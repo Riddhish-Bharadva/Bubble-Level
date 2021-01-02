@@ -14,7 +14,7 @@ public class OneD_CV extends View {
     private int blockWidth = 0;
     private Paint unitBackground, bubbleCircle; // These are colors of boxes on board.
     private Rect unitShape; // This is to make blocks on screen square.
-    HandleData hd; // This will be used to fetch all data in onDraw method.
+    HandleOneD_Data hd; // This will be used to fetch all data in onDraw method.
     // Declaration of required variables ends here.
 
     public OneD_CV(Context context) {
@@ -54,7 +54,7 @@ public class OneD_CV extends View {
             unitShape = new Rect(0, 0, blockWidth*8, blockWidth*3/2); // Creating box using rectangle.
         else
             unitShape = new Rect(0, 0, blockWidth*8, blockWidth*2); // Creating box using rectangle.
-        hd = new HandleData();
+        hd = new HandleOneD_Data();
     }
 
     public void onDraw(Canvas canvas)

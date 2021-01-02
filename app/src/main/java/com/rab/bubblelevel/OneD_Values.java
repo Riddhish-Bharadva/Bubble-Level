@@ -37,8 +37,7 @@ public class OneD_Values {
     }
 
     public void setInclinationInDegrees(double inclinationInDegrees) {
-        DecimalFormat df = new DecimalFormat("#.##");
-        this.inclinationInDegrees = Double.parseDouble(df.format(inclinationInDegrees));
+        this.inclinationInDegrees = inclinationInDegrees;
     }
 
     private float convertFormat(float number)

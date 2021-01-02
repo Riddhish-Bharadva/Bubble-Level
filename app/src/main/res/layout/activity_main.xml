@@ -15,33 +15,40 @@
         <TextView
             android:id="@+id/xValue"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="X-axis Values"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
         <TextView
             android:id="@+id/yValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/xValue"
-            android:layout_toEndOf="@+id/xValue"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp" />
+            android:text="Y-axis Values"
+            android:layout_centerHorizontal="true"/>
         <TextView
             android:id="@+id/zValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/yValue"
-            android:layout_toEndOf="@+id/yValue"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp" />
+            android:text="Z-axis Values"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
         <TextView
             android:id="@+id/valueInDegrees"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Values in Degrees"
             android:layout_below="@+id/yValue"
             android:layout_marginTop="10dp"/>
     </RelativeLayout>
 
     <com.rab.bubblelevel.OneD_CV
         android:id="@+id/OneD_CV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true" />
+
+    <com.rab.bubblelevel.TwoD_CV
+        android:id="@+id/TwoD_CV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true" />
@@ -55,11 +62,13 @@
         <TextView
             android:id="@+id/minInDegrees"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="Minimum Values"/>
         <TextView
             android:id="@+id/maxInDegrees"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Maximum Values"
             android:layout_below="@+id/minInDegrees"
             android:layout_marginTop="10dp"/>
     </RelativeLayout>
