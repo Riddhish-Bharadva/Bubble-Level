@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         TextView tv = findViewById(R.id.TV1);
+        final OneD_CV oDCV = findViewById(R.id.OneD_CV);
         SensorManager sm = (SensorManager) getSystemService(SENSOR_SERVICE);
 
         if(sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)!=null)
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
                         {
                             oDV.setInclinationInDegrees(azimuth);
                             hd[0].record1DValues(oDV);
+                            oDCV.postInvalidate();
                         }
                         String temp;
                         if(hd[0].get1DLastData() != null)
