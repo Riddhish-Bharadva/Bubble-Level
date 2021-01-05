@@ -12,7 +12,6 @@ public class RecordedValues {
     private static boolean magneticFieldValues = false;
     private static double magneticX;
     private static double magneticY;
-    private static double magneticZ;
 
     public float getXValue() {
         return xValue;
@@ -78,20 +77,12 @@ public class RecordedValues {
         RecordedValues.magneticY = formatDouble(magneticY);
     }
 
-    public double getMagneticZ() {
-        return magneticZ;
-    }
-
-    public void setMagneticZ(double magneticZ) {
-        RecordedValues.magneticZ = formatDouble(magneticZ);
-    }
-
     public boolean isMagneticFieldValues() {
         return magneticFieldValues;
     }
 
     public void setMagneticFieldValues(boolean magneticFieldValues) {
-        this.magneticFieldValues = magneticFieldValues;
+        RecordedValues.magneticFieldValues = magneticFieldValues;
     }
 
     private float formatFloat(float number)

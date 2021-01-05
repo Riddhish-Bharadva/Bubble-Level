@@ -191,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
                         rv.setMagneticFieldValues(true);
                         rv.setMagneticX(event.values[0]);
                         rv.setMagneticY(event.values[1]);
-                        rv.setMagneticZ(event.values[2]);
                     };
                     Thread t = new Thread(r);
                     t.start();

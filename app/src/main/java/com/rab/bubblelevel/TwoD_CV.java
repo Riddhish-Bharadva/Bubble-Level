@@ -6,15 +6,18 @@ import android.util.*;
 import android.view.*;
 import androidx.annotation.*;
 
+import java.text.DecimalFormat;
+
 public class TwoD_CV extends View {
 
     // Declaration of required variables starts here.
     private int deviceTotalWidth = 0;
     private int blockWidth = 0;
-    private Paint unitBackground, bubbleCircle, directionLine; // These are colors of boxes on board.
+    private Paint unitBackground, bubbleCircle; // These are colors of boxes on board.
     private Rect unitShape; // This is to make blocks on screen square.
-    HandleData hd; // This will be used to fetch all data in onDraw method.
-    RecordedValues rv; // This object will be used to fetch Magnetic field values.
+    private HandleData hd; // This will be used to fetch all data in onDraw method.
+    private RecordedValues rv; // This object will be used to fetch Magnetic field values.
+    private static Bitmap bitmap; // This is bitmap of image.
     // Declaration of required variables ends here.
 
     public TwoD_CV(Context context) {
@@ -45,9 +48,6 @@ public class TwoD_CV extends View {
         bubbleCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
         bubbleCircle.setStyle(Paint.Style.FILL); // This will fill rectangle.
         bubbleCircle.setColor(Color.WHITE); // Setting color to white.
-        directionLine = new Paint(Paint.ANTI_ALIAS_FLAG);
-        directionLine.setStyle(Paint.Style.FILL); // This will fill rectangle.
-        directionLine.setTextSize(30); // Setting text size to 30. This will make line darker as well.
         // Declaration of colors ends.
         blockWidth = deviceTotalWidth/10;
         unitShape = new Rect(0, 0, blockWidth*8, blockWidth*8); // Creating box using rectangle.
@@ -88,14 +88,21 @@ public class TwoD_CV extends View {
         canvas.translate(-Float.parseFloat((blockWidth*i)+""),-Float.parseFloat((blockWidth*j)+""));
         if(rv.isMagneticFieldValues())
         {
-            double magX = rv.getMagneticX(), magY = rv.getMagneticY();
-            double NorthInDegree = Math.atan2(magY,magX)*270/Math.PI; // We are diving here atan2 value by 270 as our device inclination will always be 90 degree more than actual value.
-            Matrix m = new Matrix(); // Giving rotating effect to image.
-            m.postRotate(Float.parseFloat(-NorthInDegree+""));
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.needle); // Create bitmap.
-            bitmap = Bitmap.createScaledBitmap(bitmap,blockWidth*5/4,blockWidth*3/2,false); // Rescaling image.
-            bitmap = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),m,true); // Passing the rotating effect of matrix here to image.
-            canvas.drawBitmap(bitmap,blockWidth*4,blockWidth*21/2,null); // drawing image on canvas.
+            rotateImage();
+            canvas.drawBitmap(bitmap,Float.parseFloat(blockWidth*9/2+""),Float.parseFloat(blockWidth*21/2+""),null); // drawing image on canvas.
         }
+    }
+
+    private void rotateImage()
+    {
+        double magX = rv.getMagneticX(), magY = rv.getMagneticY();
+        double NorthInDegree = Math.atan2(magY,magX)*180/Math.PI-90; // We are diving here atan2 value by 270 as our device inclination will always be 90 degree more than actual value.
+        Matrix m = new Matrix(); // Giving rotating effect to image.
+        DecimalFormat df = new DecimalFormat("#");
+        NorthInDegree = Double.parseDouble(df.format(NorthInDegree));
+        m.postRotate(Float.parseFloat(-NorthInDegree+""));
+        bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.needle); // Create bitmap.
+        bitmap = Bitmap.createScaledBitmap(bitmap,blockWidth*5/4,blockWidth*3/2,true); // Rescaling image.
+        bitmap = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),m,true); // Passing the rotating effect of matrix here to image.
     }
 }
