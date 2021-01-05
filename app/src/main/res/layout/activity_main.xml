@@ -41,20 +41,26 @@
             android:layout_marginTop="10dp"/>
     </RelativeLayout>
 
-    <com.rab.bubblelevel.OneD_CV
-        android:id="@+id/OneD_CV"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true" />
-
-    <com.rab.bubblelevel.TwoD_CV
-        android:id="@+id/TwoD_CV"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true" />
-
     <RelativeLayout
         android:id="@+id/RL2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/RL1"
+        android:layout_above="@+id/RL3">
+        <com.rab.bubblelevel.OneD_CV
+            android:id="@+id/OneD_CV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true" />
+        <com.rab.bubblelevel.TwoD_CV
+            android:id="@+id/TwoD_CV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/RL3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"

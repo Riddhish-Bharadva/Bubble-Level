@@ -14,7 +14,7 @@ public class OneD_CV extends View {
     private int blockWidth = 0;
     private Paint unitBackground, bubbleCircle; // These are colors of boxes on board.
     private Rect unitShape; // This is to make blocks on screen square.
-    HandleOneD_Data hd; // This will be used to fetch all data in onDraw method.
+    HandleData hd; // This will be used to fetch all data in onDraw method.
     // Declaration of required variables ends here.
 
     public OneD_CV(Context context) {
@@ -34,8 +34,6 @@ public class OneD_CV extends View {
         deviceTotalWidth = MeasureSpec.getSize(oneDWidth); // Getting screen width.
         deviceTotalHeight = MeasureSpec.getSize(oneDHeight); // Getting screen height.
         setMeasuredDimension(oneDWidth,oneDHeight); // Assigning dimensions to Custom View.
-        Log.i("Width",deviceTotalWidth+"");
-        Log.i("Height",deviceTotalHeight+"");
         init();
     }
 
@@ -50,11 +48,8 @@ public class OneD_CV extends View {
         bubbleCircle.setColor(Color.WHITE); // Setting color to white.
         // Declaration of colors ends.
         blockWidth = deviceTotalWidth/10;
-        if(deviceTotalHeight<1000)
-            unitShape = new Rect(0, 0, blockWidth*8, blockWidth*3/2); // Creating box using rectangle.
-        else
-            unitShape = new Rect(0, 0, blockWidth*8, blockWidth*2); // Creating box using rectangle.
-        hd = new HandleOneD_Data();
+        unitShape = new Rect(0, 0, blockWidth*8, blockWidth*2); // Creating box using rectangle.
+        hd = new HandleData();
     }
 
     public void onDraw(Canvas canvas)
@@ -64,9 +59,9 @@ public class OneD_CV extends View {
         canvas.drawRect(unitShape,unitBackground);
         canvas.translate(-blockWidth,0);
         double i = 5;
-        if(hd.get1DLastData() != null)
+        if(hd.getLastData() != null)
         {
-            i = i-hd.get1DLastData().getInclinationInDegrees()/2.85;
+            i = i-hd.getLastData().getInclinationInDegrees()/2.85;
         }
         canvas.translate(Float.parseFloat((blockWidth*i)+""),0);
         if(blockWidth>125)

@@ -1,23 +1,23 @@
 package com.rab.bubblelevel;
 
-public class HandleOneD_Data {
+public class HandleData {
     // Declaration of Global variable starts here.
-    private static OneD_Values[] oneDValues;
+    private static RecordedValues[] recordedValues;
     private static int index = 0;
     // Declaration of Global variable ends here.
 
     // Declaration of constructor starts.
-    public HandleOneD_Data()
+    public HandleData()
     {
         index = 0;
-        oneDValues = new OneD_Values[500];
+        recordedValues = new RecordedValues[500];
     }
     // Declaration of constructor ends here.
 
     // Below method will be used to insert new value in 1D array.
-    protected void record1DValues(OneD_Values value)
+    protected void recordValues(RecordedValues value)
     {
-        oneDValues[index] = value; // Inserting value at index so far.
+        recordedValues[index] = value; // Inserting value at index so far.
         incrementIndex(); // Calling method to increment Index.
     }
     // record1DValues method ends here.
@@ -33,15 +33,15 @@ public class HandleOneD_Data {
     }
     // incrementIndex method ends here.
 
-    // Below method will be used to fetch last record inserted in 1D array.
-    protected OneD_Values get1DLastData()
+    // Below method will be used to fetch last record inserted for 1D.
+    protected RecordedValues getLastData()
     {
-        if(oneDValues.length>0) // In case there are records in array, do as below. This is to handle initial state of application records.
+        if(recordedValues.length>0) // In case there are records in array, do as below. This is to handle initial state of application records.
         {
             if(index != 0)
-                return oneDValues[index-1]; // Returning last recorded value in case index is not 0.
+                return recordedValues[index-1]; // Returning last recorded value in case index is not 0.
             else
-                return oneDValues[oneDValues.length-1]; // Returning last recorded value in case index is positioned to 0.
+                return recordedValues[recordedValues.length-1]; // Returning last recorded value in case index is positioned to 0.
         }
         else // In case there are no records in Array, return 0.
         {
