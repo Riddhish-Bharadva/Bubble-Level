@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import android.hardware.*;
-import java.text.*;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -24,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
         final OneD_CV oDCV = findViewById(R.id.OneD_CV);
         final TwoD_CV tDCV = findViewById(R.id.TwoD_CV);
         SensorManager sm = (SensorManager) getSystemService(SENSOR_SERVICE);
-
         if(sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)!=null)
         {
             sm.registerListener(new SensorEventListener() {
@@ -53,14 +51,24 @@ public class MainActivity extends AppCompatActivity {
                     zTV.setText(temp);
                     if(Math.abs(event.values[2]) < 5.0)
                     {
+                        if(tDCV.getVisibility() == View.VISIBLE)
+                        {
+                            minInDegreesTV.setText("");
+                            maxInDegreesTV.setText("");
+                            minDegree = Double.MAX_VALUE;
+                            maxDegree = Double.MIN_VALUE;
+                        }
                         oDCV.setVisibility(View.VISIBLE);
                         tDCV.setVisibility(View.INVISIBLE);
                         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                         degreeValue = Math.toDegrees(Math.atan2(Double.parseDouble(yValue+""),Double.parseDouble(xValue+"")));
+                        degreeValue = rv.formatDouble(degreeValue);
                         if(orientation[0] != getResources().getConfiguration().orientation)
                         {
                             orientation[0] = getResources().getConfiguration().orientation;
                             hod[0] = new HandleData();
+                            minDegree = Double.MAX_VALUE;
+                            maxDegree = Double.MIN_VALUE;
                         }
                         if(orientation[0] == Configuration.ORIENTATION_LANDSCAPE)
                         {
@@ -80,8 +88,7 @@ public class MainActivity extends AppCompatActivity {
                             else
                                 azimuth = 90 + degreeValue;
                         }
-                        DecimalFormat df = new DecimalFormat("#.##");
-                        azimuth = Double.parseDouble(df.format(azimuth));
+                        azimuth = rv.formatDouble(azimuth);
                         if(Math.abs(azimuth) <= 10.0)
                         {
                             rv.setInclinationInDegrees(azimuth);
@@ -117,6 +124,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                     else
                     {
+                        if(oDCV.getVisibility() == View.VISIBLE)
+                        {
+                            minHorizontal = Double.MAX_VALUE;
+                            maxHorizontal = Double.MIN_VALUE;
+                            minVertical = Double.MAX_VALUE;
+                            maxVertical = Double.MIN_VALUE;
+                        }
                         oDCV.setVisibility(View.INVISIBLE);
                         tDCV.setVisibility(View.VISIBLE);
                         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
@@ -124,14 +138,14 @@ public class MainActivity extends AppCompatActivity {
                         hod[0] = new HandleData();
                         horizontal = Math.toDegrees(Math.atan2(Double.parseDouble(xValue+""),Double.parseDouble(zValue+"")));
                         vertical = Math.toDegrees(Math.atan2(Double.parseDouble(yValue+""),Double.parseDouble(zValue+"")));
+                        horizontal = rv.formatDouble(horizontal);
+                        vertical = rv.formatDouble(vertical);
                         if(Math.abs(horizontal) <= 10.0 || Math.abs(vertical) <= 10.0)
                         {
                             rv.setHorizontalInclination(horizontal);
                             rv.setVerticalInclination(vertical);
                             hod[0].recordValues(rv);
                             tDCV.postInvalidate();
-                            horizontal = rv.getHorizontalInclination();
-                            vertical = rv.getVerticalInclination();
                             temp = "Vertical Inclination: "+vertical+"\nHorizontal Inclination: "+horizontal;
                             valueInDegreesTV.setText(temp);
                         }
@@ -157,12 +171,42 @@ public class MainActivity extends AppCompatActivity {
                         maxInDegreesTV.setText(temp);
                     }
                 }
-            }, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_NORMAL);
+            },sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_NORMAL);
         }
         else
         {
-            String temp = "Required sensor not present on your device.";
+            String temp = "Required accelerometer sensor is not detected in your device.";
             xTV.setText(temp);
+        }
+        if(sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)!=null)
+        {
+            sm.registerListener(new SensorEventListener() {
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int accuracy) { }
+
+                @Override
+                public void onSensorChanged(SensorEvent event) {
+                    Runnable r = () -> {
+                        RecordedValues rv = new RecordedValues();
+                        rv.setMagneticFieldValues(true);
+                        rv.setMagneticX(event.values[0]);
+                        rv.setMagneticY(event.values[1]);
+                        rv.setMagneticZ(event.values[2]);
+                    };
+                    Thread t = new Thread(r);
+                    t.start();
+                    try {
+                        t.join();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            },sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        else
+        {
+            String temp = "Required magnetic field sensor is not detected on your device.";
+            Toast.makeText( this, temp ,Toast.LENGTH_LONG).show();
         }
     }
 }

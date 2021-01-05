@@ -1,10 +1,7 @@
 package com.rab.bubblelevel;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
+import android.graphics.*;
 import android.util.*;
 import android.view.*;
 import androidx.annotation.*;
@@ -17,6 +14,7 @@ public class TwoD_CV extends View {
     private Paint unitBackground, bubbleCircle, directionLine; // These are colors of boxes on board.
     private Rect unitShape; // This is to make blocks on screen square.
     HandleData hd; // This will be used to fetch all data in onDraw method.
+    RecordedValues rv; // This object will be used to fetch Magnetic field values.
     // Declaration of required variables ends here.
 
     public TwoD_CV(Context context) {
@@ -54,6 +52,7 @@ public class TwoD_CV extends View {
         blockWidth = deviceTotalWidth/10;
         unitShape = new Rect(0, 0, blockWidth*8, blockWidth*8); // Creating box using rectangle.
         hd = new HandleData();
+        rv = new RecordedValues();
     }
 
     public void onDraw(Canvas canvas)
@@ -63,10 +62,6 @@ public class TwoD_CV extends View {
         canvas.drawRect(unitShape,unitBackground);
         canvas.translate(-blockWidth,-blockWidth*2);
         double i = 5, j = 6; // These are initial positions on x and y axis.
-        directionLine.setColor(Color.GREEN); // Setting color to green for line.
-        canvas.drawLine(Float.parseFloat(blockWidth*i+""),Float.parseFloat(blockWidth*j+""),Float.parseFloat(blockWidth*i+""),Float.parseFloat(blockWidth+""),directionLine);
-        directionLine.setColor(Color.BLACK); // Setting color to black for text.
-        canvas.drawText("N",Float.parseFloat(blockWidth*i+"")-10,Float.parseFloat(blockWidth+"")-10,directionLine);
         if(hd.getLastData() != null)
         {
             i = i+hd.getLastData().getHorizontalInclination()/3.3;
@@ -90,5 +85,17 @@ public class TwoD_CV extends View {
         }
         canvas.translate(Float.parseFloat((blockWidth*i)+""),Float.parseFloat((blockWidth*j)+""));
         canvas.drawCircle(0,0,Float.parseFloat((blockWidth)+""),bubbleCircle);
+        canvas.translate(-Float.parseFloat((blockWidth*i)+""),-Float.parseFloat((blockWidth*j)+""));
+        if(rv.isMagneticFieldValues())
+        {
+            double magX = rv.getMagneticX(), magY = rv.getMagneticY();
+            double NorthInDegree = Math.atan2(magY,magX)*270/Math.PI; // We are diving here atan2 value by 270 as our device inclination will always be 90 degree more than actual value.
+            Matrix m = new Matrix(); // Giving rotating effect to image.
+            m.postRotate(Float.parseFloat(-NorthInDegree+""));
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.needle); // Create bitmap.
+            bitmap = Bitmap.createScaledBitmap(bitmap,blockWidth*5/4,blockWidth*3/2,false); // Rescaling image.
+            bitmap = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),m,true); // Passing the rotating effect of matrix here to image.
+            canvas.drawBitmap(bitmap,blockWidth*4,blockWidth*21/2,null); // drawing image on canvas.
+        }
     }
 }

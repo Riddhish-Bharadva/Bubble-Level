@@ -9,6 +9,10 @@ public class RecordedValues {
     private double inclinationInDegrees;
     private double horizontalInclination;
     private double verticalInclination;
+    private static boolean magneticFieldValues = false;
+    private static double magneticX;
+    private static double magneticY;
+    private static double magneticZ;
 
     public float getXValue() {
         return xValue;
@@ -58,13 +62,45 @@ public class RecordedValues {
         this.verticalInclination = formatDouble(verticalInclination);
     }
 
+    public double getMagneticX() {
+        return magneticX;
+    }
+
+    public void setMagneticX(double magneticX) {
+        RecordedValues.magneticX = formatDouble(magneticX);
+    }
+
+    public double getMagneticY() {
+        return magneticY;
+    }
+
+    public void setMagneticY(double magneticY) {
+        RecordedValues.magneticY = formatDouble(magneticY);
+    }
+
+    public double getMagneticZ() {
+        return magneticZ;
+    }
+
+    public void setMagneticZ(double magneticZ) {
+        RecordedValues.magneticZ = formatDouble(magneticZ);
+    }
+
+    public boolean isMagneticFieldValues() {
+        return magneticFieldValues;
+    }
+
+    public void setMagneticFieldValues(boolean magneticFieldValues) {
+        this.magneticFieldValues = magneticFieldValues;
+    }
+
     private float formatFloat(float number)
     {
         DecimalFormat df = new DecimalFormat("#.##");
         return Float.parseFloat(df.format(number));
     }
 
-    private double formatDouble(double number)
+    protected double formatDouble(double number)
     {
         DecimalFormat df = new DecimalFormat("#.##");
         return Double.parseDouble(df.format(number));
