@@ -5,19 +5,17 @@ import android.graphics.*;
 import android.util.*;
 import android.view.*;
 import androidx.annotation.*;
-
-import java.text.DecimalFormat;
+import java.text.*;
 
 public class TwoD_CV extends View {
 
     // Declaration of required variables starts here.
     private int deviceTotalWidth = 0;
     private int blockWidth = 0;
-    private Paint unitBackground, bubbleCircle; // These are colors of boxes on board.
+    private Paint unitBackground, bubbleCircle, directionLine; // These are colors of boxes on board.
     private Rect unitShape; // This is to make blocks on screen square.
     private HandleData hd; // This will be used to fetch all data in onDraw method.
     private RecordedValues rv; // This object will be used to fetch Magnetic field values.
-    private static Bitmap bitmap; // This is bitmap of image.
     // Declaration of required variables ends here.
 
     public TwoD_CV(Context context) {
@@ -48,8 +46,13 @@ public class TwoD_CV extends View {
         bubbleCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
         bubbleCircle.setStyle(Paint.Style.FILL); // This will fill rectangle.
         bubbleCircle.setColor(Color.WHITE); // Setting color to white.
+        directionLine = new Paint(Paint.ANTI_ALIAS_FLAG);
+        directionLine.setStyle(Paint.Style.FILL); // This will fill rectangle.
+        directionLine.setColor(Color.RED); // Setting color to white.
+        directionLine.setStrokeWidth(5);
         // Declaration of colors ends.
         blockWidth = deviceTotalWidth/10;
+        directionLine.setTextSize((float)blockWidth/3);
         unitShape = new Rect(0, 0, blockWidth*8, blockWidth*8); // Creating box using rectangle.
         hd = new HandleData();
         rv = new RecordedValues();
@@ -84,25 +87,43 @@ public class TwoD_CV extends View {
             j = 3.0;
         }
         canvas.translate(Float.parseFloat((blockWidth*i)+""),Float.parseFloat((blockWidth*j)+""));
-        canvas.drawCircle(0,0,Float.parseFloat((blockWidth)+""),bubbleCircle);
+        canvas.drawCircle(0,0,(float)blockWidth,bubbleCircle);
         canvas.translate(-Float.parseFloat((blockWidth*i)+""),-Float.parseFloat((blockWidth*j)+""));
         if(rv.isMagneticFieldValues())
         {
-            rotateImage();
-            canvas.drawBitmap(bitmap,Float.parseFloat(blockWidth*9/2+""),Float.parseFloat(blockWidth*21/2+""),null); // drawing image on canvas.
+            float[] points = plotNorth();
+            canvas.drawLine(points[0],points[1],points[2],points[3],directionLine);
+            canvas.drawCircle(points[0],points[1],30,bubbleCircle);
+            if(points[0]<0)
+            {
+                points[0] = points[0]+13;
+            }
+            else if(points[0]>0)
+            {
+                points[0] = points[0]-13;
+            }
+            if(points[1]<0)
+            {
+                points[1] = points[1]-13;
+            }
+            else if(points[1]>0)
+            {
+                points[1] = points[1]+13;
+            }
+            canvas.drawText("N",points[0],points[1],directionLine);
         }
     }
 
-    private void rotateImage()
+    private float[] plotNorth()
     {
         double magX = rv.getMagneticX(), magY = rv.getMagneticY();
-        double NorthInDegree = Math.atan2(magY,magX)*180/Math.PI-90; // We are diving here atan2 value by 270 as our device inclination will always be 90 degree more than actual value.
+        double NorthInDegree = Math.atan2(magY,magX)*180/Math.PI-90;
         Matrix m = new Matrix(); // Giving rotating effect to image.
+        float[] points = {blockWidth*5,(float)blockWidth*5/2,blockWidth*5,(float)blockWidth*19/2};
         DecimalFormat df = new DecimalFormat("#");
         NorthInDegree = Double.parseDouble(df.format(NorthInDegree));
-        m.postRotate(Float.parseFloat(-NorthInDegree+""));
-        bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.needle); // Create bitmap.
-        bitmap = Bitmap.createScaledBitmap(bitmap,blockWidth*5/4,blockWidth*3/2,true); // Rescaling image.
-        bitmap = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),m,true); // Passing the rotating effect of matrix here to image.
+        m.setRotate((float)-NorthInDegree,blockWidth*5,blockWidth*6);
+        m.mapPoints(points);
+        return points;
     }
 }
