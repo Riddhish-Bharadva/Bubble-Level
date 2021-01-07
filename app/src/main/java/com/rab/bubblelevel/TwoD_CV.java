@@ -44,15 +44,15 @@ public class TwoD_CV extends View {
         unitBackground.setStyle(Paint.Style.FILL); // This will fill rectangle.
         unitBackground.setColor(Color.rgb(45, 114, 178)); // Setting color to blue.
         bubbleCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
-        bubbleCircle.setStyle(Paint.Style.FILL); // This will fill rectangle.
+        bubbleCircle.setStyle(Paint.Style.FILL); // This will fill bubble.
         bubbleCircle.setColor(Color.WHITE); // Setting color to white.
         directionLine = new Paint(Paint.ANTI_ALIAS_FLAG);
-        directionLine.setStyle(Paint.Style.FILL); // This will fill rectangle.
+        directionLine.setStyle(Paint.Style.FILL); // This will fill direction line.
         directionLine.setColor(Color.RED); // Setting color to white.
-        directionLine.setStrokeWidth(5);
+        directionLine.setStrokeWidth(5); // Setting stroke width to 5 so that direction line will be thick enough to be visible on screen.
         // Declaration of colors ends.
-        blockWidth = deviceTotalWidth/10;
-        directionLine.setTextSize((float)blockWidth/3);
+        blockWidth = deviceTotalWidth/10; // Calculating block width based on device total width.
+        directionLine.setTextSize((float)blockWidth/3); // Changing font size based on block width.
         unitShape = new Rect(0, 0, blockWidth*8, blockWidth*8); // Creating box using rectangle.
         hd = new HandleData();
         rv = new RecordedValues();

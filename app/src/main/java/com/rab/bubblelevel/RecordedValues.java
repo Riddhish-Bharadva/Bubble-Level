@@ -3,6 +3,7 @@ package com.rab.bubblelevel;
 import java.text.DecimalFormat;
 
 public class RecordedValues {
+    // Declaration of required variables starts here.
     private float xValue;
     private float yValue;
     private float zValue;
@@ -12,6 +13,7 @@ public class RecordedValues {
     private static boolean magneticFieldValues = false;
     private static double magneticX;
     private static double magneticY;
+    // Declaration of required variables ends here.
 
     public float getXValue() {
         return xValue;

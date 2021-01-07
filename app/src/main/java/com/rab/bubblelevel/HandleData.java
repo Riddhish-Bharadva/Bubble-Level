@@ -6,7 +6,7 @@ public class HandleData {
     private static int index = 0;
     // Declaration of Global variable ends here.
 
-    // Declaration of constructor starts.
+    // Declaration of constructor starts. Whenever a constructor will be called, below variables will be reset.
     public HandleData()
     {
         index = 0;
