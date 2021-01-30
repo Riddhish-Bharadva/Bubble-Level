@@ -9,8 +9,8 @@ public class HandleData {
     // Declaration of constructor starts. Whenever a constructor will be called, below variables will be reset.
     public HandleData()
     {
-        index = 0;
-        recordedValues = new RecordedValues[500];
+        this.index = 0;
+        this.recordedValues = new RecordedValues[500];
     }
     // Declaration of constructor ends here.
 
