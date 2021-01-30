@@ -34,22 +34,22 @@ public class OneD_CV extends View {
         deviceTotalWidth = MeasureSpec.getSize(oneDWidth); // Getting screen width.
         deviceTotalHeight = MeasureSpec.getSize(oneDHeight); // Getting screen height.
         setMeasuredDimension(oneDWidth,oneDHeight); // Assigning dimensions to Custom View.
-        init(); // Calling init method to initialize all required variables.
+        init();
     }
 
     private void init()
     {
         // Declaration of colors start.
         unitBackground = new Paint(Paint.ANTI_ALIAS_FLAG);
-        unitBackground.setStyle(Paint.Style.FILL); // This will fill rectangle block.
+        unitBackground.setStyle(Paint.Style.FILL); // This will fill rectangle.
         unitBackground.setColor(Color.rgb(45, 114, 178)); // Setting color to blue.
         bubbleCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
-        bubbleCircle.setStyle(Paint.Style.FILL); // This will fill bubble.
+        bubbleCircle.setStyle(Paint.Style.FILL); // This will fill rectangle.
         bubbleCircle.setColor(Color.WHITE); // Setting color to white.
         // Declaration of colors ends.
-        blockWidth = deviceTotalWidth/10; // Calculating block width based on device width.
+        blockWidth = deviceTotalWidth/10;
         unitShape = new Rect(0, 0, blockWidth*8, blockWidth*2); // Creating box using rectangle.
-        hd = new HandleData(); // Creating new object on handle data class to initialize the same as well.
+        hd = new HandleData();
     }
 
     public void onDraw(Canvas canvas)
@@ -59,7 +59,7 @@ public class OneD_CV extends View {
         canvas.drawRect(unitShape,unitBackground);
         canvas.translate(-blockWidth,0);
         double i = 5;
-        if(hd.getLastData() != null) // If handle data is not blank, do as below.
+        if(hd.getLastData() != null)
         {
             i = i-hd.getLastData().getInclinationInDegrees()/2.85;
         }

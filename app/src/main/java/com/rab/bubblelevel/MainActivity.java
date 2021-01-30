@@ -14,201 +14,198 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView xTV = findViewById(R.id.xValue); // This text view will display either message or X-axis values.
-        TextView yTV = findViewById(R.id.yValue); // This text view will display Y-axis values.
-        TextView zTV = findViewById(R.id.zValue); // This text view will display Z-axis values.
-        TextView valueInDegreesTV = findViewById(R.id.valueInDegrees); // This text view will display inclination in degrees.
-        TextView minInDegreesTV = findViewById(R.id.minInDegrees); // This text view will display minimum inclination recorded in degrees.
-        TextView maxInDegreesTV = findViewById(R.id.maxInDegrees); // This text view will display maximum inclination recorded in degrees.
-        final OneD_CV oDCV = findViewById(R.id.OneD_CV); // This is an object of 1D custom view.
-        final TwoD_CV tDCV = findViewById(R.id.TwoD_CV); // This is an object of 2D custom view.
-        SensorManager sm = (SensorManager) getSystemService(SENSOR_SERVICE); // This is an object of sensor manager. This will be used later to detect sensor values.
-        if(sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)!=null) // Checking if accelerometer is detected in device.
+        TextView xTV = findViewById(R.id.xValue);
+        TextView yTV = findViewById(R.id.yValue);
+        TextView zTV = findViewById(R.id.zValue);
+        TextView valueInDegreesTV = findViewById(R.id.valueInDegrees);
+        TextView minInDegreesTV = findViewById(R.id.minInDegrees);
+        TextView maxInDegreesTV = findViewById(R.id.maxInDegrees);
+        final OneD_CV oDCV = findViewById(R.id.OneD_CV);
+        final TwoD_CV tDCV = findViewById(R.id.TwoD_CV);
+        SensorManager sm = (SensorManager) getSystemService(SENSOR_SERVICE);
+        if(sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)!=null)
         {
-            sm.registerListener(new SensorEventListener() { // This is new class to listen sensor value changes for accelerometer.
-                final HandleData[] hod = new HandleData[1]; // This is an object of class HandleData. This class will handle 500 values sensed data by sensor.
-                final int[] orientation = {-1}; // Orientation is size 1 integer array used to check orientation type of device.
-                // Below is declaration of required variables.
+            sm.registerListener(new SensorEventListener() {
+                final HandleData[] hod = new HandleData[1];
+                final int[] orientation = {-1};
                 double minDegree = Double.MAX_VALUE, maxDegree = Double.MIN_VALUE, minHorizontal = Double.MAX_VALUE, maxHorizontal = Double.MIN_VALUE, minVertical = Double.MAX_VALUE, maxVertical = Double.MIN_VALUE;
                 @Override
                 public void onAccuracyChanged(Sensor sensor, int accuracy) { }
                 @Override
-                public void onSensorChanged(SensorEvent event) { // In case there are changes in sensor data, do as below.
-                    // Declaration of required variables starts here.
+                public void onSensorChanged(SensorEvent event) {
                     float xValue, yValue, zValue;
                     double degreeValue, horizontal, vertical, azimuth = 0;
                     String temp;
                     RecordedValues rv = new RecordedValues();
-                    // Declaration of required variables ends here.
-                    rv.setXValue(event.values[0]); // Setting X-axis value in RecordedValues object.
-                    rv.setYValue(event.values[1]); // Setting Y-axis value in RecordedValues object.
-                    rv.setZValue(event.values[2]); // Setting Z-axis value in RecordedValues object.
-                    xValue = rv.getXValue(); // Fetching X-axis value from above object.
-                    yValue = rv.getYValue(); // Fetching Y-axis value from above object.
-                    zValue = rv.getZValue(); // Fetching Z-axis value from above object.
-                    temp = "X value: "+xValue; // Preparing string to display on text view.
-                    xTV.setText(temp); // Setting text view value.
-                    temp = "Y value: "+yValue; // Preparing string to display on text view.
-                    yTV.setText(temp); // Setting text view value.
-                    temp = "Z value: "+zValue; // Preparing string to display on text view.
-                    zTV.setText(temp); // Setting text view value.
-                    if(Math.abs(event.values[2]) < 5.0) // In case phone is not placed on flat surface, do as below.
+                    rv.setXValue(event.values[0]);
+                    rv.setYValue(event.values[1]);
+                    rv.setZValue(event.values[2]);
+                    xValue = rv.getXValue();
+                    yValue = rv.getYValue();
+                    zValue = rv.getZValue();
+                    temp = "X value: "+xValue;
+                    xTV.setText(temp);
+                    temp = "Y value: "+yValue;
+                    yTV.setText(temp);
+                    temp = "Z value: "+zValue;
+                    zTV.setText(temp);
+                    if(Math.abs(event.values[2]) < 5.0)
                     {
-                        if(tDCV.getVisibility() == View.VISIBLE) // In case 2D view was visible, do as below.
+                        if(tDCV.getVisibility() == View.VISIBLE)
                         {
-                            minInDegreesTV.setText(""); // Reset text view value.
-                            maxInDegreesTV.setText(""); // Reset text view value.
-                            minDegree = Double.MAX_VALUE; // Reset variable.
-                            maxDegree = Double.MIN_VALUE; // Reset variable.
+                            minInDegreesTV.setText("");
+                            maxInDegreesTV.setText("");
+                            minDegree = Double.MAX_VALUE;
+                            maxDegree = Double.MIN_VALUE;
                         }
-                        oDCV.setVisibility(View.VISIBLE); // Enable visibility of 1D view.
-                        tDCV.setVisibility(View.INVISIBLE); // Disable visibility of 2D view.
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR); // Set orientation sensor to default. This is required as we are disabling this sensor in 2D view.
-                        degreeValue = Math.toDegrees(Math.atan2(Double.parseDouble(yValue+""),Double.parseDouble(xValue+""))); // Calculating inclination in degree.
-                        degreeValue = rv.formatDouble(degreeValue); // Formating degree values to 2 digits after decimal point.
-                        if(orientation[0] != getResources().getConfiguration().orientation) // Checking if current orientation is same as last recorded orientation or not.
+                        oDCV.setVisibility(View.VISIBLE);
+                        tDCV.setVisibility(View.INVISIBLE);
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                        degreeValue = Math.toDegrees(Math.atan2(Double.parseDouble(yValue+""),Double.parseDouble(xValue+"")));
+                        degreeValue = rv.formatDouble(degreeValue);
+                        if(orientation[0] != getResources().getConfiguration().orientation)
                         {
-                            orientation[0] = getResources().getConfiguration().orientation; // Set orientation in case it is not as previous one.
-                            hod[0] = new HandleData(); // Create new object of Handle Data to reset all values.
-                            minDegree = Double.MAX_VALUE; // Reset variable.
-                            maxDegree = Double.MIN_VALUE; // Reset variable.
+                            orientation[0] = getResources().getConfiguration().orientation;
+                            hod[0] = new HandleData();
+                            minDegree = Double.MAX_VALUE;
+                            maxDegree = Double.MIN_VALUE;
                         }
-                        if(orientation[0] == Configuration.ORIENTATION_LANDSCAPE) // In case orientation is landscape, do as below.
+                        if(orientation[0] == Configuration.ORIENTATION_LANDSCAPE)
                         {
-                            if(degreeValue > 0 && degreeValue < 90) // Check if value recorded is in left half of top part of device.
+                            if(degreeValue > 0 && degreeValue < 90)
                                 azimuth = degreeValue;
-                            else if(degreeValue > 0 && degreeValue > 90) // Check if value recorded is in right half of top part of device.
+                            else if(degreeValue > 0 && degreeValue > 90)
                                 azimuth = degreeValue - 180;
-                            else if(degreeValue < 0 && degreeValue < -90) // Check if value recorded is in right half of bottom part of device.
+                            else if(degreeValue < 0 && degreeValue < -90)
                                 azimuth = degreeValue + 180;
-                            else // If nothing from above is true, recorded value is in left half of bottom part of device.
+                            else
                                 azimuth = degreeValue;
                         }
-                        else if(orientation[0] == Configuration.ORIENTATION_PORTRAIT) // In case orientation is portrait, do as below.
+                        else if(orientation[0] == Configuration.ORIENTATION_PORTRAIT)
                         {
-                            if(degreeValue > 0) // Check if recorded value is greater than 0, it is in top half of device.
+                            if(degreeValue > 0)
                                 azimuth = degreeValue - 90;
-                            else // Else recorded value is in bottom part of device screen.
+                            else
                                 azimuth = 90 + degreeValue;
                         }
-                        azimuth = rv.formatDouble(azimuth); // Converting azimuth to 2 digits after decimal point.
-                        if(Math.abs(azimuth) <= 10.0) // In case recorded values is in range of [-10,10], do as below.
+                        azimuth = rv.formatDouble(azimuth);
+                        if(Math.abs(azimuth) <= 10.0)
                         {
-                            rv.setInclinationInDegrees(azimuth); // Set inclination in object.
-                            hod[0].recordValues(rv); // Record value in HandleData class up to 500 values.
-                            oDCV.postInvalidate(); // Refreshing canvas.
-                            temp = "Inclination in Degrees: "+Math.abs(rv.getInclinationInDegrees()); // Preparing string to display on text view.
-                            valueInDegreesTV.setText(temp); // Setting text view value.
+                            rv.setInclinationInDegrees(azimuth);
+                            hod[0].recordValues(rv);
+                            oDCV.postInvalidate();
+                            temp = "Inclination in Degrees: "+Math.abs(rv.getInclinationInDegrees());
+                            valueInDegreesTV.setText(temp);
                         }
-                        else if(azimuth > 10.0) // In case recorded value is greater than 10 degrees, do as below.
+                        else if(azimuth > 10.0)
                         {
-                            rv.setInclinationInDegrees(10.0); // Set inclination to 10 so that bubble does not go out of our device.
-                            hod[0].recordValues(rv); // Record value in HandleData class up to 500 values.
-                            oDCV.postInvalidate(); // Refreshing canvas.
+                            rv.setInclinationInDegrees(10.0);
+                            hod[0].recordValues(rv);
+                            oDCV.postInvalidate();
                         }
-                        else // In case recorded value is less than -10 degrees, do as below.
+                        else
                         {
-                            rv.setInclinationInDegrees(-10.0); // Set inclination to -10 so that bubble does not go out of our device.
-                            hod[0].recordValues(rv); // Record value in HandleData class up to 500 values.
-                            oDCV.postInvalidate(); // Refreshing canvas.
+                            rv.setInclinationInDegrees(-10.0);
+                            hod[0].recordValues(rv);
+                            oDCV.postInvalidate();
                         }
-                        if(azimuth<minDegree) // In case current azimuth value is less than minimum degree, do as below.
+                        if(azimuth<minDegree)
                         {
-                            minDegree = azimuth; // Assign value to minimum degree.
-                            temp = "Minimum Inclination in Degree: "+minDegree; // Preparing string to display on text view.
-                            minInDegreesTV.setText(temp); // Setting text view value.
+                            minDegree = azimuth;
+                            temp = "Minimum Inclination in Degree: "+minDegree;
+                            minInDegreesTV.setText(temp);
                         }
-                        if(azimuth>maxDegree) // In case current azimuth value is greater than maximum degree, do as below.
+                        if(azimuth>maxDegree)
                         {
-                            maxDegree = azimuth; // Assign value to maximum degree.
-                            temp = "Maximum Inclination in Degree: "+maxDegree; // Preparing string to display on text view.
-                            maxInDegreesTV.setText(temp); // Setting text view value.
+                            maxDegree = azimuth;
+                            temp = "Maximum Inclination in Degree: "+maxDegree;
+                            maxInDegreesTV.setText(temp);
                         }
                     }
-                    else // If Z-axis value of recorded values is more than above threshold, do as below.
+                    else
                     {
-                        if(oDCV.getVisibility() == View.VISIBLE) // Checking if visibility of 1D custom view was visible, do as below.
+                        if(oDCV.getVisibility() == View.VISIBLE)
                         {
-                            minHorizontal = Double.MAX_VALUE; // Resetting variable.
-                            maxHorizontal = Double.MIN_VALUE; // Resetting variable.
-                            minVertical = Double.MAX_VALUE; // Resetting variable.
-                            maxVertical = Double.MIN_VALUE; // Resetting variable.
+                            minHorizontal = Double.MAX_VALUE;
+                            maxHorizontal = Double.MIN_VALUE;
+                            minVertical = Double.MAX_VALUE;
+                            maxVertical = Double.MIN_VALUE;
                         }
-                        oDCV.setVisibility(View.INVISIBLE); // Changing visibility of 1D CV.
-                        tDCV.setVisibility(View.VISIBLE); // Changing visibility of 2D CV.
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR); // Blocking orientation sensor to stop sensing orientation.
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); // Forcing orientation to be portrait mode.
-                        hod[0] = new HandleData(); // Resetting object. This will also reset required variables.
-                        horizontal = Math.toDegrees(Math.atan2(Double.parseDouble(xValue+""),Double.parseDouble(zValue+""))); // Calculating horizontal azimuth.
-                        vertical = Math.toDegrees(Math.atan2(Double.parseDouble(yValue+""),Double.parseDouble(zValue+""))); // Calculating vertical azimuth.
-                        horizontal = rv.formatDouble(horizontal); // Restricting value to 2 digits after decimal places.
-                        vertical = rv.formatDouble(vertical); // Restricting value to 2 digits after decimal places.
-                        if(Math.abs(horizontal) <= 10.0 || Math.abs(vertical) <= 10.0) // If horizontal or vertical values are in range of [-10,10], do as below.
+                        oDCV.setVisibility(View.INVISIBLE);
+                        tDCV.setVisibility(View.VISIBLE);
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                        hod[0] = new HandleData();
+                        horizontal = Math.toDegrees(Math.atan2(Double.parseDouble(xValue+""),Double.parseDouble(zValue+"")));
+                        vertical = Math.toDegrees(Math.atan2(Double.parseDouble(yValue+""),Double.parseDouble(zValue+"")));
+                        horizontal = rv.formatDouble(horizontal);
+                        vertical = rv.formatDouble(vertical);
+                        if(Math.abs(horizontal) <= 10.0 || Math.abs(vertical) <= 10.0)
                         {
-                            rv.setHorizontalInclination(horizontal); // Setting horizontal value in object.
-                            rv.setVerticalInclination(vertical); // Setting vertical value in object.
-                            hod[0].recordValues(rv); // Recording value in HandleData class up to 500 records.
-                            tDCV.postInvalidate(); // Refreshing canvas.
-                            temp = "Vertical Inclination: "+vertical+"\nHorizontal Inclination: "+horizontal; // Preparing string to display on text view.
-                            valueInDegreesTV.setText(temp); // Setting text view value.
+                            rv.setHorizontalInclination(horizontal);
+                            rv.setVerticalInclination(vertical);
+                            hod[0].recordValues(rv);
+                            tDCV.postInvalidate();
+                            temp = "Vertical Inclination: "+vertical+"\nHorizontal Inclination: "+horizontal;
+                            valueInDegreesTV.setText(temp);
                         }
-                        if(horizontal<minHorizontal) // If minimum recorded value is less than current value, do as below.
+                        if(horizontal<minHorizontal)
                         {
-                            minHorizontal = horizontal; // Assign current value to minimum variable.
+                            minHorizontal = horizontal;
                         }
-                        if(horizontal>maxHorizontal) // If maximum recorded value is greater than current value, do as below.
+                        if(horizontal>maxHorizontal)
                         {
-                            maxHorizontal = horizontal; // Assign current value to maximum variable.
+                            maxHorizontal = horizontal;
                         }
-                        if(vertical<minVertical) // If minimum recorded value is less than current value, do as below.
+                        if(vertical<minVertical)
                         {
-                            minVertical = vertical; // Assign current value to minimum variable.
+                            minVertical = vertical;
                         }
-                        if(vertical>maxVertical) // If maximum recorded value is greater than current value, do as below.
+                        if(vertical>maxVertical)
                         {
-                            maxVertical = vertical; // Assign current value to maximum variable.
+                            maxVertical = vertical;
                         }
-                        temp = "Minimum Values:\nHorizontal: "+minHorizontal+"\t\tVertical: "+minVertical; // Preparing string to display on text view.
-                        minInDegreesTV.setText(temp); // Setting text view value.
-                        temp = "Maximum Values:\nHorizontal: "+maxHorizontal+"\t\tVertical: "+maxVertical; // Preparing string to display on text view.
-                        maxInDegreesTV.setText(temp); // Setting text view value.
+                        temp = "Minimum Values:\nHorizontal: "+minHorizontal+"\t\tVertical: "+minVertical;
+                        minInDegreesTV.setText(temp);
+                        temp = "Maximum Values:\nHorizontal: "+maxHorizontal+"\t\tVertical: "+maxVertical;
+                        maxInDegreesTV.setText(temp);
                     }
                 }
-            },sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_NORMAL); // Sensing values for Accelerometer.
+            },sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_NORMAL);
         }
-        else // In case no accelerometer is detected, do as below.
+        else
         {
-            String temp = "Required accelerometer sensor is not detected in your device."; // Preparing string to display on text view.
-            xTV.setText(temp); // Setting text view value.
+            String temp = "Required accelerometer sensor is not detected in your device.";
+            xTV.setText(temp);
         }
-        if(sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)!=null) // If Magnetic field sensor is found on device, do as below.
+        if(sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)!=null)
         {
-            sm.registerListener(new SensorEventListener() { // Registering sensor listener.
+            sm.registerListener(new SensorEventListener() {
                 @Override
                 public void onAccuracyChanged(Sensor sensor, int accuracy) { }
 
                 @Override
-                public void onSensorChanged(SensorEvent event) { // In case there are changes in sensor values, do as below.
-                    Runnable r = () -> { // Running below code in different thread.
-                        RecordedValues rv = new RecordedValues(); // Creating object for recordedValues.
-                        rv.setMagneticFieldValues(true); // Setting magnetic field values to true. This will identify if North needle is to be shown in 2D canvas or not.
-                        rv.setMagneticX(event.values[0]); // Recording X-axis values.
-                        rv.setMagneticY(event.values[1]); // Recording Y-axis values.
+                public void onSensorChanged(SensorEvent event) {
+                    Runnable r = () -> {
+                        RecordedValues rv = new RecordedValues();
+                        rv.setMagneticFieldValues(true);
+                        rv.setMagneticX(event.values[0]);
+                        rv.setMagneticY(event.values[1]);
                     };
-                    Thread t = new Thread(r); // Creating new thread.
-                    t.start(); // Starting new thread.
+                    Thread t = new Thread(r);
+                    t.start();
                     try {
-                        t.join(); // Joining previously started thread to wait till it's execution in complete.
+                        t.join();
                     } catch (Exception e) {
-                        e.printStackTrace(); // Showing exception in case it's thrown.
+                        e.printStackTrace();
                     }
                 }
-            },sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),SensorManager.SENSOR_DELAY_NORMAL); // Sensing values for Magnetic field sensor.
+            },sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),SensorManager.SENSOR_DELAY_NORMAL);
         }
-        else // In case no magnetic field sensor is detected, do as below.
+        else
         {
-            String temp = "Required magnetic field sensor is not detected on your device."; // Preparing string to display on text view.
-            Toast.makeText( this, temp ,Toast.LENGTH_LONG).show(); // Show toast message on UI.
+            String temp = "Required magnetic field sensor is not detected on your device.";
+            Toast.makeText( this, temp ,Toast.LENGTH_LONG).show();
         }
     }
 }
