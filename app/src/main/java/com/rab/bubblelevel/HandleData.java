@@ -9,8 +9,8 @@ public class HandleData {
     // Declaration of constructor starts.
     public HandleData()
     {
-        this.index = 0;
-        this.recordedValues = new RecordedValues[500];
+        index = 0;
+        recordedValues = new RecordedValues[500];
     }
     // Declaration of constructor ends here.
 
